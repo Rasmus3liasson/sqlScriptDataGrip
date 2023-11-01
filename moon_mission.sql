@@ -13,27 +13,26 @@ ALTER TABLE successful_mission
 
 -- Uppgift 3
 UPDATE moon_mission
-SET operator = REGEXP_REPLACE(operator, '[[:space:]]', '');
+SET operator = REGEXP_REPLACE(operator, '[[:space:]]', '')
+WHERE operator IS NOT NULL;
 UPDATE successful_mission
-SET operator = REGEXP_REPLACE(operator, '[[:space:]]', '');
+SET operator = REGEXP_REPLACE(operator, '[[:space:]]', '')
+WHERE operator IS NOT NULL;
 
 -- Uppgift 4
 DELETE FROM successful_mission
 WHERE launch_date >= '2010-01-01';
 
 -- uppgift 5
-
--- needs to remove the first and last name
-
 ALTER TABLE account
     ADD COLUMN gender VARCHAR(10);
 UPDATE account
 SET gender = IF(RIGHT(ssn, 1) % 2 = 1, 'male', 'female')
 WHERE ssn IS NOT NULL;
 
-SELECT *, CONCAT(first_name, ' ', last_name) AS name
-FROM account;
-
+UPDATE account
+SET name = CONCAT(first_name, ' ', last_name)
+WHERE first_name IS NOT NULL AND last_name IS NOT NULL;
 
 -- uppgift 6
 DELETE
@@ -42,7 +41,6 @@ WHERE CONVERT(LEFT(ssn, 2), SIGNED) <= 70
   AND gender = 'female';
 
 -- uppgift 7
-
 SELECT gender,
        ROUND(AVG(TIMESTAMPDIFF(YEAR,
                                STR_TO_DATE(CONCAT(
